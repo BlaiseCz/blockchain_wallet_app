@@ -1,0 +1,58 @@
+.menu-bar {
+    -fx-background-color: #b2fbbb;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: #000;
+}
+
+#mainBackground {
+    -fx-background-color: #ecf0f1;
+}
+
+
+.button {
+    -fx-background-color: #b2fbbb;
+    -fx-border-color: #4d6a51;
+    -fx-text-fill: #000;
+}
+
+.button:hover {
+    -fx-background-color: #85f292;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+}
+
+.button:pressed {
+    -fx-scale-y: 1;
+    -fx-scale-x: 1;
+}
+
+.text-field {
+    -fx-scale-y: 1;
+    -fx-scale-x: 1;
+}
+
+.text-field:hover {
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+}
+
+#portTextField, #hostTextField, #nodeRequestButton {
+    -fx-display: block;
+}
+
+#hostInfoListView {
+    -fx-max-height: 150px;
+}
+
+.text {
+    -fx-font-size: 14px;
+    -fx-padding: 2px;
+}
+
+Text {
+    -fx-font-size: 20px;
+    -fx-padding: 2px;
+}
