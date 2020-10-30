@@ -14,37 +14,58 @@
 
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.text.Text?>
-<AnchorPane fx:id="mainBackground" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.wallet.blockchain_wallet.gui.components.MainController">
-    <children>
-        <MenuBar layoutY="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0"
-                 VBox.vgrow="NEVER">
-            <menus>
-                <Menu mnemonicParsing="false" text="Options">
-                    <SeparatorMenuItem mnemonicParsing="false"/>
-                    <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Quit"/>
-                    <SeparatorMenuItem mnemonicParsing="false"/>
-                </Menu>
-            </menus>
-        </MenuBar>
-        <VBox AnchorPane.leftAnchor="12.5" AnchorPane.topAnchor="43.0">
-            <Text>Set HostInfo:</Text>
-            <NumberTextField fx:id="portTextField" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="50.0"
-                             text="1234"/>
-            <TextField fx:id="hostTextField" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="82.5" text="host"/>
-            <Button fx:id="nodeRequestButton" AnchorPane.leftAnchor="30.0" text="Nodes Request"
-                    onAction="#nodesRequest"
-                    AnchorPane.topAnchor="122.5"/>
-            <Text AnchorPane.topAnchor="233.5">HostInfo list:</Text>
-            <ListView fx:id="hostInfoListView" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="260"/>
-        </VBox>
-        <VBox AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="50.0">
-            <Button fx:id="notifyWalletButton" AnchorPane.leftAnchor="30.0" text="Notify Wallet"
-                    onAction="#notifyWallet"
-                    AnchorPane.topAnchor="102.5"/>
-        </VBox>
-    </children>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Separator?>
+
+
+<VBox fx:id="mainBackground" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.wallet.blockchain_wallet.gui.components.MainController"
+      prefHeight="407.0" prefWidth="734.0">
     <stylesheets>
         <URL value="@main.css"/>
     </stylesheets>
-</AnchorPane>
+    <MenuBar VBox.vgrow="NEVER">
+        <Menu mnemonicParsing="false" text="Options">
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Quit"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+        </Menu>
+    </MenuBar>
+    <AnchorPane prefHeight="378.0" prefWidth="737.0" VBox.vgrow="ALWAYS">
+        <Text layoutX="39.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SET HOST INFO"/>
+        <NumberTextField fx:id="portTextField" layoutX="14.0" layoutY="42.0" text="PORT"/>
+        <TextField fx:id="hostTextField" layoutX="14.0" layoutY="76.0" text="IP ADDRESS"/>
+        <Text layoutX="19.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCOVERED HOSTS">
+            <font>
+                <Font size="16.0"/>
+            </font>
+        </Text>
+        <ListView fx:id="hostInfoListView" layoutX="19.0" layoutY="149.0" prefHeight="200.0" prefWidth="180.0"/>
+        <Button layoutX="182.0" layoutY="76.0" mnemonicParsing="false" fx:id="nodeRequestButton"
+                onAction="#nodesRequest" text="SEND"/>
+        <Separator layoutX="244.0" layoutY="3.0" orientation="VERTICAL" prefHeight="200.0"/>
+        <Separator layoutX="244.0" layoutY="178.0" orientation="VERTICAL" prefHeight="200.0"/>
+        <Text layoutX="258.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="BEFORE STARTING ANY TRANSACTION FIRST:">
+            <font>
+                <Font size="22.0"/>
+            </font>
+        </Text>
+        <Button layoutX="425.0" layoutY="56.0" mnemonicParsing="false" fx:id="notifyWalletButton"
+                onAction="#notifyWallet" text="NOTIFY WALLET"/>
+        <Button fx:id="ballanceButton" onAction="#getWalletBallance" layoutX="274.0" layoutY="125.0"
+                mnemonicParsing="false" text="BALANCE"/>
+        <Text fx:id="coinsBalanceText" layoutX="367.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0">
+            <font>
+                <Font size="22.0"/>
+            </font>
+        </Text>
+        <Text layoutX="430.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="COINS"/>
+        <Button fx:id="transactionButton" onAction="#performTransaction" layoutX="269.0" layoutY="196.0"
+                mnemonicParsing="false" text="SEND COINS"/>
+        <Text layoutX="386.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TO"/>
+        <Text layoutX="376.0" layoutY="254.0" strokeType="OUTSIDE" strokeWidth="0.0" text="COINS"/>
+        <TextField layoutX="425.0" layoutY="199.0"/>
+        <TextField layoutX="425.0" layoutY="236.0"/>
+    </AnchorPane>
+</VBox>

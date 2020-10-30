@@ -46,13 +46,3 @@
 #hostInfoListView {
     -fx-max-height: 150px;
 }
-
-.text {
-    -fx-font-size: 14px;
-    -fx-padding: 2px;
-}
-
-Text {
-    -fx-font-size: 20px;
-    -fx-padding: 2px;
-}

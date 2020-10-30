@@ -5,6 +5,7 @@ import com.wallet.blockchain_wallet.client.wallet.WalletClient;
 import com.wallet.blockchain_wallet.client.wallet.WalletException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
@@ -30,6 +31,15 @@ public class MainController {
     private Button notifyWalletButton;
 
     @FXML
+    private Button transactionButton;
+
+    @FXML
+    private Button ballanceButton;
+
+    @FXML
+    private Text coinsBalanceText;
+
+    @FXML
     void closeApp() {
         System.exit(0);
     }
@@ -37,23 +47,26 @@ public class MainController {
     @FXML
     private ListView<HostInfo> hostInfoListView;
 
-//    @FXML
-//    private static Alert alert;
-
 
     @FXML
     void nodesRequest() throws WalletException {
-        int port = Integer.parseInt(portTextField.getText());
-        String host = hostTextField.getText();
-        hostInfo = new HostInfo(host, port);
+        try {
+            int port = Integer.parseInt(portTextField.getText());
+            String host = hostTextField.getText();
+            hostInfo = new HostInfo(host, port);
+        } catch (Exception e) {
+            ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", "WRONG PORT/IP ADDRESS");
+        }
 
-        walletClient = new WalletClient(hostInfo);
+        if(hostInfo != null) {
+            walletClient = new WalletClient(hostInfo);
 //        walletClient.sendMessage("NS");
-        List<HostInfo> hostInfoList = new ArrayList<>();
-        hostInfoList.add(new HostInfo("123", 1));
-        hostInfoList.add(new HostInfo("567", 2));
+            List<HostInfo> hostInfoList = new ArrayList<>();
+            hostInfoList.add(new HostInfo("123", 1));
+            hostInfoList.add(new HostInfo("567", 2));
 
-        viewHostInfoList(hostInfoList);
+            viewHostInfoList(hostInfoList);
+        }
     }
 
     @FXML
@@ -73,4 +86,15 @@ public class MainController {
         hostInfoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
+
+    @FXML
+    public void getWalletBallance() {
+        System.out.println("get ballance");
+        coinsBalanceText.setText("124");
+    }
+
+    @FXML
+    public void performTransaction() {
+        System.out.println("perform transaction");
+    }
 }
