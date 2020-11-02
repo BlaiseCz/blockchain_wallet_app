@@ -27,21 +27,7 @@ public class MainController {
     private TextField hostTextField;
 
     @FXML
-    private Button nodeRequestButton;
-
-    @FXML
-    private Button notifyWalletButton;
-
-    @FXML
-    private Button ballanceButton;
-
-    @FXML
     private Text ownedCoins;
-
-    @FXML
-    void closeApp() {
-        System.exit(0);
-    }
 
     @FXML
     private ListView<HostInfo> hostInfoListView;
@@ -51,6 +37,11 @@ public class MainController {
 
     @FXML
     private TextField coinsToSend;
+
+    @FXML
+    void closeApp() {
+        System.exit(0);
+    }
 
     @FXML
     void nodesRequest() throws WalletException {
