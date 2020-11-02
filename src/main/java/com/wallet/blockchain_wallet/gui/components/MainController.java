@@ -6,11 +6,13 @@ import com.wallet.blockchain_wallet.client.wallet.WalletException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class MainController {
 
@@ -31,13 +33,10 @@ public class MainController {
     private Button notifyWalletButton;
 
     @FXML
-    private Button transactionButton;
-
-    @FXML
     private Button ballanceButton;
 
     @FXML
-    private Text coinsBalanceText;
+    private Text ownedCoins;
 
     @FXML
     void closeApp() {
@@ -47,6 +46,11 @@ public class MainController {
     @FXML
     private ListView<HostInfo> hostInfoListView;
 
+    @FXML
+    private TextField coinsRecipient;
+
+    @FXML
+    private TextField coinsToSend;
 
     @FXML
     void nodesRequest() throws WalletException {
@@ -55,15 +59,15 @@ public class MainController {
             String host = hostTextField.getText();
             hostInfo = new HostInfo(host, port);
         } catch (Exception e) {
-            ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", "WRONG PORT/IP ADDRESS");
+            ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", "WRONG PORT/ADDRESS");
         }
 
         if(hostInfo != null) {
             walletClient = new WalletClient(hostInfo);
 //        walletClient.sendMessage("NS");
             List<HostInfo> hostInfoList = new ArrayList<>();
-            hostInfoList.add(new HostInfo("123", 1));
-            hostInfoList.add(new HostInfo("567", 2));
+            hostInfoList.add(new HostInfo("12ASFASF312A", 49123));
+            hostInfoList.add(new HostInfo("56ASVASF7XAA", 51002));
 
             viewHostInfoList(hostInfoList);
         }
@@ -89,12 +93,40 @@ public class MainController {
 
     @FXML
     public void getWalletBallance() {
-        System.out.println("get ballance");
-        coinsBalanceText.setText("124");
+        log.info("get ballance");
+        ownedCoins.setText("124");
     }
 
     @FXML
     public void performTransaction() {
-        System.out.println("perform transaction");
+        log.info("perform transaction");
+        try {
+            int userCoins = Integer.parseInt(ownedCoins.getText());
+            int transactionCoins = Integer.parseInt(coinsToSend.getText());
+            String recipientInfo = coinsRecipient.getText();
+            log.info("available coins:" + userCoins + " amount: " + transactionCoins);
+
+            if (userCoins > transactionCoins) {
+                try {
+                    log.info(hostInfo.getAddress() + ":" + hostInfo.getPort() + recipientInfo + " amount: " + transactionCoins);
+                    walletClient = new WalletClient(hostInfo);
+                    walletClient.sendMessage("TSgjfd98g2h39ghn8e | fjh329f8h9e8yf290837fgyh |13.372137|128579683948| jfv78fdhv873b495bv7865987c632874");
+                } catch (WalletException e){
+                    ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
+                }
+
+            } else {
+                ControllerAllert.showAlert(Alert.AlertType.WARNING, "WARNING", "not enough coins" );
+            }
+        } catch (Exception e){
+            ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleRecipientClick() {
+        HostInfo pickedValue = hostInfoListView.getSelectionModel().getSelectedItem();
+        log.info("clicked on " + pickedValue.getAddress() + ":"  + pickedValue.getPort());
+        coinsRecipient.setText(pickedValue.getAddress() + ":"  + pickedValue.getPort());
     }
 }

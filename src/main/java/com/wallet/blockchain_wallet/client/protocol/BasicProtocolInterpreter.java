@@ -12,7 +12,6 @@ import java.util.Optional;
 @Slf4j
 public class BasicProtocolInterpreter implements ProtocolInterpreter {
 
-    private HeaderProcessor headerProcessor;
 
     @Override
     public void interpretMessage(String message) {
@@ -44,8 +43,6 @@ public class BasicProtocolInterpreter implements ProtocolInterpreter {
     private void NODES_RESPONSE(String value) {
         NodesResponse nodesResponse = new NodesResponse();
         List<HostInfo> hostInfoList = nodesResponse.hostInfoListFromData(value);
-
-
     }
 
 }

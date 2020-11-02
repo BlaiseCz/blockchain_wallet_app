@@ -34,13 +34,13 @@
     <AnchorPane prefHeight="378.0" prefWidth="737.0" VBox.vgrow="ALWAYS">
         <Text layoutX="39.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SET HOST INFO"/>
         <NumberTextField fx:id="portTextField" layoutX="14.0" layoutY="42.0" text="PORT"/>
-        <TextField fx:id="hostTextField" layoutX="14.0" layoutY="76.0" text="IP ADDRESS"/>
+        <TextField fx:id="hostTextField" layoutX="14.0" layoutY="76.0" text="ADDRESS"/>
         <Text layoutX="19.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCOVERED HOSTS">
             <font>
                 <Font size="16.0"/>
             </font>
         </Text>
-        <ListView fx:id="hostInfoListView" layoutX="19.0" layoutY="149.0" prefHeight="200.0" prefWidth="180.0"/>
+        <ListView fx:id="hostInfoListView" onMouseClicked="#handleRecipientClick" layoutX="19.0" layoutY="149.0" prefHeight="200.0" prefWidth="180.0"/>
         <Button layoutX="182.0" layoutY="76.0" mnemonicParsing="false" fx:id="nodeRequestButton"
                 onAction="#nodesRequest" text="SEND"/>
         <Separator layoutX="244.0" layoutY="3.0" orientation="VERTICAL" prefHeight="200.0"/>
@@ -55,7 +55,7 @@
                 onAction="#notifyWallet" text="NOTIFY WALLET"/>
         <Button fx:id="ballanceButton" onAction="#getWalletBallance" layoutX="274.0" layoutY="125.0"
                 mnemonicParsing="false" text="BALANCE"/>
-        <Text fx:id="coinsBalanceText" layoutX="367.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0">
+        <Text fx:id="ownedCoins" layoutX="367.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0">
             <font>
                 <Font size="22.0"/>
             </font>
@@ -65,7 +65,7 @@
                 mnemonicParsing="false" text="SEND COINS"/>
         <Text layoutX="386.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TO"/>
         <Text layoutX="376.0" layoutY="254.0" strokeType="OUTSIDE" strokeWidth="0.0" text="COINS"/>
-        <TextField layoutX="425.0" layoutY="199.0"/>
-        <TextField layoutX="425.0" layoutY="236.0"/>
+        <TextField fx:id="coinsRecipient" layoutX="425.0" layoutY="199.0"/>
+        <TextField fx:id="coinsToSend" layoutX="425.0" layoutY="236.0"/>
     </AnchorPane>
 </VBox>
