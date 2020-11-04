@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class CommunicationObject {
     private String text;
+    private int senderPort;
 }
