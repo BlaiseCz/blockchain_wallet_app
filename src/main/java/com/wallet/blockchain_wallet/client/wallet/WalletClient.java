@@ -6,78 +6,98 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.wallet.blockchain_wallet.client.protocol.ProtocolInterpreter;
 import lombok.Data;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Random;
 
 
 @Slf4j
 @Data
 public class WalletClient implements WalletService {
-
     private Client client;
-    private static final int timeout = 100000;
-    private HostInfo hostInfo;
+    private Random random;
+
+    private HostInfo coreConnectionParams;
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
+    private static final int CONNECTION_TIMEOUT = 5000;
+
 
     private ProtocolInterpreter interpreter;
 
     public WalletClient(HostInfo hostInfo) throws WalletException {
         try {
-            this.hostInfo = hostInfo;
-            client = new Client();
+            this.coreConnectionParams = hostInfo;
+            this.client = new Client();
             registerCommunicationClass();
         } catch (Exception e) {
             throw new WalletException("Something wrong with WalletClient constructor...");
         }
     }
 
-
+    @Override
     public void sendMessage(String msg) throws WalletException {
-        if(hostInfo == null) {
+        if (coreConnectionParams == null) {
             throw new WalletException("HostInfo is null!");
         }
 
-        if (!client.isConnected()) {
-            try {
-                client.start();
-                client.connect(timeout, hostInfo.getAddress(), hostInfo.getPort());
-            } catch (IOException e) {
-                throw new WalletException("Could not connect...");
-            }
-        }
         try {
-            client.sendTCP(new CommunicationObject(msg));
+            client.start();
+            client.connect(CONNECTION_TIMEOUT, coreConnectionParams.getAddress(), coreConnectionParams.getPort());
+            CommunicationObject msgToSend = new CommunicationObject(msg);
+
+            log.info("Sending to localhost:{} msg{}", coreConnectionParams.getPort(), msgToSend.getText());
+            client.sendTCP(msgToSend.getText());
+            initializeInterpreter();
         } catch (Exception e) {
-            throw new WalletException("Could not send TCP packet to " + hostInfo.getAddress() + ":" + hostInfo.getPort());
+            e.printStackTrace();
+            throw new WalletException("Could not send TCP packet to " + coreConnectionParams.getAddress() + ":" + coreConnectionParams.getPort());
         }
     }
 
+
+    @Override
     public void getData() {
 
     }
 
     private void registerCommunicationClass() {
+
         Kryo clientKryo = client.getKryo();
         clientKryo.register(CommunicationObject.class);
-        log.info("WalletClient registered");
+        log.info("Registered communication class");
     }
 
-    private void initializeInterpreter() {
+
+    private void initializeInterpreter() throws IOException {
+        client.connect(CONNECTION_TIMEOUT, coreConnectionParams.getAddress(), coreConnectionParams.getPort());
+
         client.addListener(new Listener() {
             @Override
-            public void received(Connection connection, Object object) {
+            public void received (Connection connection, Object object) {
                 if (object instanceof CommunicationObject) {
-                    delegateToInterpretMessage(connection, (CommunicationObject) object);
+                    CommunicationObject response = (CommunicationObject)object;
+                    log.info("received {} from localhost:{}", response.getText());
                 }
             }
         });
     }
 
-    private void delegateToInterpretMessage(Connection connection, CommunicationObject object) {
-        String text = object.getText();
 
-        log.info("Interpreting: {}", text);
+
+    private void delegateToInterpretMessage(Connection connection, CommunicationObject object) {
+
+        String hostAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
+        String port = String.valueOf(connection.getRemoteAddressTCP().getPort());
+        String text = object.getText();
+        log.info("Interpreting: {} from {}:{}", text, hostAddress, port);
         interpreter.interpretMessage(text);
+    }
+
+    public void closeClient() {
+        client.close();
     }
 }

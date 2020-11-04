@@ -39,12 +39,22 @@ public class MainController {
     private TextField coinsToSend;
 
     @FXML
+    private Button notifyWalletButton;
+
+    @FXML
+    private Button ballanceButton;
+
+    @FXML
+    private Button sendCoinsButton;
+
+    @FXML
     void closeApp() {
+        walletClient.closeClient();
         System.exit(0);
     }
 
     @FXML
-    void nodesRequest() throws WalletException {
+    void nodesRequest() {
         try {
             int port = Integer.parseInt(portTextField.getText());
             String host = hostTextField.getText();
@@ -53,23 +63,30 @@ public class MainController {
             ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", "WRONG PORT/ADDRESS");
         }
 
-        if(hostInfo != null) {
-            walletClient = new WalletClient(hostInfo);
-//        walletClient.sendMessage("NS");
-            List<HostInfo> hostInfoList = new ArrayList<>();
-            hostInfoList.add(new HostInfo("12ASFASF312A", 49123));
-            hostInfoList.add(new HostInfo("56ASVASF7XAA", 51002));
+        if (hostInfo != null) {
+            try {
+                walletClient = new WalletClient(hostInfo);
+                walletClient.sendMessage("NS");
 
-            viewHostInfoList(hostInfoList);
+//                List<HostInfo> hostInfoList = new ArrayList<>();
+//                hostInfoList.add(new HostInfo("12ASFASF312A", 49123));
+//                hostInfoList.add(new HostInfo("56ASVASF7XAA", 51002));
+//
+//                viewHostInfoList(hostInfoList);
+                buttonAccess(true);
+            } catch (Exception e) {
+                ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", "NODES REQUEST ERROR");
+            } catch (WalletException we) {
+                ControllerAllert.showAlert(Alert.AlertType.WARNING, "WARNING", we.getMessage());
+            }
         }
     }
 
     @FXML
     void notifyWallet() {
         try {
-            walletClient = new WalletClient(hostInfo);
             walletClient.sendMessage("NWas89nhf293823jf2bh827fg2ebhHASH:f893fu7293h5i3v532987djh");
-        } catch (WalletException e){
+        } catch (WalletException e) {
             ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
         }
     }
@@ -100,16 +117,14 @@ public class MainController {
             if (userCoins > transactionCoins) {
                 try {
                     log.info(hostInfo.getAddress() + ":" + hostInfo.getPort() + recipientInfo + " amount: " + transactionCoins);
-                    walletClient = new WalletClient(hostInfo);
                     walletClient.sendMessage("TSgjfd98g2h39ghn8e | fjh329f8h9e8yf290837fgyh |13.372137|128579683948| jfv78fdhv873b495bv7865987c632874");
-                } catch (WalletException e){
+                } catch (WalletException e) {
                     ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
                 }
-
             } else {
-                ControllerAllert.showAlert(Alert.AlertType.WARNING, "WARNING", "not enough coins" );
+                ControllerAllert.showAlert(Alert.AlertType.WARNING, "WARNING", "not enough coins");
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
         }
     }
@@ -117,7 +132,14 @@ public class MainController {
     @FXML
     public void handleRecipientClick() {
         HostInfo pickedValue = hostInfoListView.getSelectionModel().getSelectedItem();
-        log.info("clicked on " + pickedValue.getAddress() + ":"  + pickedValue.getPort());
-        coinsRecipient.setText(pickedValue.getAddress() + ":"  + pickedValue.getPort());
+        log.info("clicked on " + pickedValue.getAddress() + ":" + pickedValue.getPort());
+        coinsRecipient.setText(pickedValue.getAddress() + ":" + pickedValue.getPort());
+    }
+
+    private void buttonAccess(boolean toggle) {
+        notifyWalletButton.setDisable(!toggle);
+        ballanceButton.setDisable(!toggle);
+        sendCoinsButton.setDisable(!toggle);
+
     }
 }

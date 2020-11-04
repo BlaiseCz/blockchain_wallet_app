@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<VBox fx:id="mainBackground" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+<VBox fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.wallet.blockchain_wallet.gui.components.MainController"
       prefHeight="407.0" prefWidth="734.0">
     <stylesheets>
@@ -21,9 +21,9 @@
         </Menu>
     </MenuBar>
     <AnchorPane prefHeight="378.0" prefWidth="737.0" VBox.vgrow="ALWAYS">
-        <Text layoutX="39.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SET HOST INFO"/>
+        <Text layoutX="39.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CONNECT TO NODE"/>
         <NumberTextField fx:id="portTextField" layoutX="14.0" layoutY="42.0" text="PORT"/>
-        <TextField fx:id="hostTextField" layoutX="14.0" layoutY="76.0" text="ADDRESS"/>
+        <TextField fx:id="hostTextField" layoutX="14.0" layoutY="76.0" text="127.0.0.1"/>
         <Text layoutX="19.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCOVERED HOSTS">
             <font>
                 <Font size="16.0"/>
@@ -31,7 +31,7 @@
         </Text>
         <ListView fx:id="hostInfoListView" onMouseClicked="#handleRecipientClick" layoutX="19.0" layoutY="149.0"
                   prefHeight="200.0" prefWidth="180.0"/>
-        <Button layoutX="182.0" layoutY="76.0" mnemonicParsing="false" onAction="#nodesRequest" text="SEND"/>
+        <Button layoutX="182.0" layoutY="76.0" mnemonicParsing="false" onAction="#nodesRequest" text="CONNECT"/>
         <Separator layoutX="244.0" layoutY="3.0" orientation="VERTICAL" prefHeight="200.0"/>
         <Separator layoutX="244.0" layoutY="178.0" orientation="VERTICAL" prefHeight="200.0"/>
         <Text layoutX="258.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0"
@@ -40,9 +40,9 @@
                 <Font size="22.0"/>
             </font>
         </Text>
-        <Button layoutX="425.0" layoutY="56.0" mnemonicParsing="false"
+        <Button fx:id="notifyWalletButton" disable="true" layoutX="425.0" layoutY="56.0" mnemonicParsing="false"
                 onAction="#notifyWallet" text="NOTIFY WALLET"/>
-        <Button onAction="#getWalletBallance" layoutX="274.0" layoutY="125.0"
+        <Button fx:id="ballanceButton" disable="true" onAction="#getWalletBallance" layoutX="274.0" layoutY="125.0"
                 mnemonicParsing="false" text="BALANCE"/>
         <Text fx:id="ownedCoins" layoutX="367.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0">
             <font>
@@ -50,7 +50,7 @@
             </font>
         </Text>
         <Text layoutX="430.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="COINS"/>
-        <Button onAction="#performTransaction" layoutX="269.0" layoutY="196.0"
+        <Button fx:id="sendCoinsButton" disable="true" onAction="#performTransaction" layoutX="269.0" layoutY="196.0"
                 mnemonicParsing="false" text="SEND COINS"/>
         <Text layoutX="386.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TO"/>
         <Text layoutX="376.0" layoutY="254.0" strokeType="OUTSIDE" strokeWidth="0.0" text="COINS"/>
