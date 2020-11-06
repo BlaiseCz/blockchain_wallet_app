@@ -22,7 +22,7 @@
     </MenuBar>
     <AnchorPane prefHeight="378.0" prefWidth="737.0" VBox.vgrow="ALWAYS">
         <Text layoutX="39.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CONNECT TO NODE"/>
-        <NumberTextField fx:id="portTextField" layoutX="14.0" layoutY="42.0" text="PORT"/>
+        <NumberTextField fx:id="portNumberField" layoutX="14.0" layoutY="42.0" text="PORT"/>
         <TextField fx:id="hostTextField" layoutX="14.0" layoutY="76.0" text="127.0.0.1"/>
         <Text layoutX="19.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DISCOVERED HOSTS">
             <font>

@@ -1,17 +1,17 @@
 package com.wallet.blockchain_wallet.client.protocol;
 
-import com.wallet.blockchain_wallet.client.protocol.header.HeaderProcessor;
 import com.wallet.blockchain_wallet.client.protocol.header.NodesResponse;
 import com.wallet.blockchain_wallet.client.protocol.header.ProtocolHeader;
-import com.wallet.blockchain_wallet.client.wallet.HostInfo;
+import com.wallet.blockchain_wallet.gui.components.MainController;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 import java.util.Optional;
 
 @Slf4j
+@Service
 public class BasicProtocolInterpreter implements ProtocolInterpreter {
-
 
     @Override
     public void interpretMessage(String message) {
@@ -22,27 +22,28 @@ public class BasicProtocolInterpreter implements ProtocolInterpreter {
     }
 
     private void proceed(ProtocolHeader protocolHeader, String value) {
+        log.info("Proceeding with header {} with value {}", protocolHeader, value);
         switch (protocolHeader) {
             case NOTIFY_WALLET:
-                System.out.println("NOTIFY_WALLET");
+                log.info("NOTIFY_WALLET");
                 break;
             case WALLET_DATA_RESPONSE:
-                System.out.println("WALLET_DATA_RESPONSE");
+                log.info("WALLET_DATA_RESPONSE");
                 break;
             case WALLETS_RESPONSE:
-                System.out.println("WALLETS_RESPONSE");
+                log.info("WALLETS_RESPONSE");
                 break;
             case NODES_RESPONSE:
-                NODES_RESPONSE(value);
+                log.info("NODES_RESPONSE");
+                nodesResponse(value);
                 break;
             default:
                 break;
         }
     }
 
-    private void NODES_RESPONSE(String value) {
+    private void nodesResponse(String value) {
         NodesResponse nodesResponse = new NodesResponse();
-        List<HostInfo> hostInfoList = nodesResponse.hostInfoListFromData(value);
+//    TODO KURWA
     }
-
 }

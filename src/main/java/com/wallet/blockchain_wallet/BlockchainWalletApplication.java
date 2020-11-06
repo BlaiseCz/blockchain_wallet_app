@@ -26,11 +26,7 @@ public class BlockchainWalletApplication extends Application {
     private static boolean running = true;
 
     public static void main(String[] args) {
-//        SpringApplication.run(BlockchainWalletApplication.class, args);
         launch(args);
-//        WalletClient walletClient = new WalletClient(49762, "127.0.0.1");
-//        walletClient.sendMessage("NWaddressHASH:hash");
-//        walletClient.sendMessage("NS");
     }
 
     @Override
@@ -59,6 +55,5 @@ public class BlockchainWalletApplication extends Application {
         primaryStage.setTitle("Blockchain Wallet");
         primaryStage.setScene(new Scene(root, 750, 400));
         primaryStage.show();
-
     }
 }

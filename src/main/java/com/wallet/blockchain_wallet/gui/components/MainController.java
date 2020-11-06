@@ -9,19 +9,17 @@ import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Controller
 public class MainController {
 
-
     private WalletClient walletClient;
     private HostInfo hostInfo;
 
     @FXML
-    private NumberTextField portTextField;
+    private NumberTextField portNumberField;
 
     @FXML
     private TextField hostTextField;
@@ -53,10 +51,12 @@ public class MainController {
         System.exit(0);
     }
 
+
+
     @FXML
     void nodesRequest() {
         try {
-            int port = Integer.parseInt(portTextField.getText());
+            int port = Integer.parseInt(portNumberField.getText());
             String host = hostTextField.getText();
             hostInfo = new HostInfo(host, port);
         } catch (Exception e) {
@@ -67,12 +67,6 @@ public class MainController {
             try {
                 walletClient = new WalletClient(hostInfo);
                 walletClient.sendMessage("NS");
-
-//                List<HostInfo> hostInfoList = new ArrayList<>();
-//                hostInfoList.add(new HostInfo("12ASFASF312A", 49123));
-//                hostInfoList.add(new HostInfo("56ASVASF7XAA", 51002));
-//
-//                viewHostInfoList(hostInfoList);
                 buttonAccess(true);
             } catch (Exception e) {
                 ControllerAllert.showAlert(Alert.AlertType.ERROR, "ERROR", "NODES REQUEST ERROR");
@@ -91,8 +85,8 @@ public class MainController {
         }
     }
 
-    @FXML
     public void viewHostInfoList(List<HostInfo> hostInfoList) {
+        log.info("updating HostInfoList {}", hostInfoList);
         hostInfoListView.getItems().clear();
         hostInfoListView.getItems().addAll(hostInfoList);
         hostInfoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

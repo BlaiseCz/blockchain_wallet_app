@@ -5,9 +5,11 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.wallet.blockchain_wallet.client.protocol.BasicProtocolInterpreter;
 import com.wallet.blockchain_wallet.client.protocol.ProtocolInterpreter;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.PrivateKey;
@@ -16,7 +18,8 @@ import java.util.Random;
 
 
 @Slf4j
-@Data
+@Component
+@RequiredArgsConstructor
 public class WalletClient implements WalletService {
     private Client client;
     private Server server;
@@ -25,9 +28,11 @@ public class WalletClient implements WalletService {
     private PrivateKey privateKey;
     private PublicKey publicKey;
     private static final int CONNECTION_TIMEOUT = 5000;
-    private int serverPort = 0;
+    private int serverPort;
+    private Random random;
 
     private ProtocolInterpreter interpreter;
+
 
     public WalletClient(HostInfo hostInfo) throws WalletException {
         try {
@@ -52,20 +57,14 @@ public class WalletClient implements WalletService {
             client.start();
             client.connect(CONNECTION_TIMEOUT, coreConnectionParams.getAddress(), coreConnectionParams.getPort());
             CommunicationObject msgToSend = new CommunicationObject(msg, serverPort);
-            client.sendTCP(msgToSend.getText());
+            client.sendTCP(msgToSend);
             log.info("Sent to localhost:{} msg=\"{}\"", coreConnectionParams.getPort(), msgToSend.getText());
-            initializeInterpreter();
         } catch (Exception e) {
             e.printStackTrace();
             throw new WalletException("Could not send TCP packet to " + coreConnectionParams.getAddress() + ":" + coreConnectionParams.getPort());
         }
     }
 
-
-    @Override
-    public void getData() {
-
-    }
 
     private void registerCommunicationClass() {
         Kryo clientKryo = client.getKryo();
@@ -77,21 +76,26 @@ public class WalletClient implements WalletService {
 
 
     private void initializeInterpreter() {
+        interpreter = new BasicProtocolInterpreter();
+
         server.addListener(new Listener() {
             @Override
-            public void received (Connection connection, Object object) {
+            public void received(Connection connection, Object object) {
                 if (object instanceof CommunicationObject) {
-                    CommunicationObject response = (CommunicationObject)object;
-                    log.info("received {} from localhost:{}", response.getText());
+                    CommunicationObject response = (CommunicationObject) object;
+                    log.info("received {} from localhost:{}", response.getText(), response.getSenderPort());
+                    delegateToInterpretMessage(connection, response);
                 }
             }
         });
     }
 
     private void startServer() throws WalletException, IOException {
-        server.start();
+        new Thread(server).start();
         serverPort = discoverPort();
         server.bind(serverPort);
+        log.info("Server started at port: {}", serverPort);
+        initializeInterpreter();
     }
 
 
@@ -109,7 +113,6 @@ public class WalletClient implements WalletService {
     }
 
     private int discoverPort() throws WalletException {
-
         Random random = new Random();
         int tryNumber = 0;
         do {

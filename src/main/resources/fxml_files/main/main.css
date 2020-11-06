@@ -39,7 +39,7 @@
     -fx-scale-x: 1.05;
 }
 
-#portTextField, #hostTextField, #nodeRequestButton {
+#portNumberField, #hostTextField, #nodeRequestButton {
     -fx-display: block;
 }
 
