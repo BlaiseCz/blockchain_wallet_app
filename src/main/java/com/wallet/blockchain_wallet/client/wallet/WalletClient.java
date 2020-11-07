@@ -7,13 +7,13 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wallet.blockchain_wallet.client.protocol.BasicProtocolInterpreter;
 import com.wallet.blockchain_wallet.client.protocol.ProtocolInterpreter;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Random;
 
 
@@ -21,16 +21,31 @@ import java.util.Random;
 @Component
 @RequiredArgsConstructor
 public class WalletClient implements WalletService {
+
+    /**
+     * COMMUNICATION
+     */
     private Client client;
     private Server server;
 
+    /**
+     * COMMUNICATION DATA
+     */
+    @Setter
     private HostInfo coreConnectionParams;
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
-    private static final int CONNECTION_TIMEOUT = 5000;
-    private int serverPort;
-    private Random random;
+    @Setter
+    @Getter
+    private WalletData walletData;
 
+    /**
+     * COMMUNICATION PARAMS
+     */
+    private int serverPort;
+    private static final int CONNECTION_TIMEOUT = 5000;
+
+    /**
+     * RESPONSES INTERPRETER
+     */
     private ProtocolInterpreter interpreter;
 
 

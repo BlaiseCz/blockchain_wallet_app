@@ -1,6 +1,6 @@
 package com.wallet.blockchain_wallet;
 
-import com.wallet.blockchain_wallet.gui.components.MainController;
+import com.wallet.blockchain_wallet.gui.components.controllers.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -2,10 +2,9 @@ package com.wallet.blockchain_wallet.client.protocol;
 
 import com.wallet.blockchain_wallet.client.protocol.header.NodesResponse;
 import com.wallet.blockchain_wallet.client.protocol.header.ProtocolHeader;
-import com.wallet.blockchain_wallet.gui.components.MainController;
+import com.wallet.blockchain_wallet.gui.components.controllers.MainController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 
 import java.util.Optional;
 
@@ -44,6 +43,7 @@ public class BasicProtocolInterpreter implements ProtocolInterpreter {
 
     private void nodesResponse(String value) {
         NodesResponse nodesResponse = new NodesResponse();
-//    TODO KURWA
+        MainController.hostInfoHolder = nodesResponse.hostInfoListFromData(value);
+        MainController.isHostInfoUpdated = true;
     }
 }

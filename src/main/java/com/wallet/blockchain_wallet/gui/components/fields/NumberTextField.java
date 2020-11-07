@@ -1,4 +1,4 @@
-package com.wallet.blockchain_wallet.gui.components;
+package com.wallet.blockchain_wallet.gui.components.fields;
 
 
 import javafx.scene.control.TextField;
