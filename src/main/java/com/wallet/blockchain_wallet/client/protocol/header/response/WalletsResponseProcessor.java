@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -15,6 +16,9 @@ public class WalletsResponseProcessor implements WalletsResponse{
         List<String> wallets = new ArrayList<>();
         wallets.add("test123");
         wallets.add("test1234XD");
+
+        wallets = Arrays.asList(data.split("\\s*|\\s*"));
+
         log.info("Received WalletsList {}", wallets);
         return wallets;
     }
