@@ -1,4 +1,4 @@
-package com.wallet.blockchain_wallet.client.wallet;
+package com.wallet.blockchain_wallet.client.utils;
 
 
 import lombok.AccessLevel;

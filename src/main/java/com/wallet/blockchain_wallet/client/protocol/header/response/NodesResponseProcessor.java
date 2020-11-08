@@ -1,4 +1,4 @@
-package com.wallet.blockchain_wallet.client.protocol.header;
+package com.wallet.blockchain_wallet.client.protocol.header.response;
 
 import com.wallet.blockchain_wallet.client.wallet.HostInfo;
 import lombok.SneakyThrows;
@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Slf4j
-public class NodesResponse implements HeaderProcessor {
+public class NodesResponseProcessor implements NodesResponse {
 
     @Override
     @SneakyThrows
@@ -26,7 +26,7 @@ public class NodesResponse implements HeaderProcessor {
             response.add(bufferHostInfo);
         }
 
-        log.info("Response passed to controller {}", response.toString());
+        log.info("Received HostInfoList {}", response.toString());
         return response;
     }
 

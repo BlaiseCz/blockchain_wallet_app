@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wallet.blockchain_wallet.client.protocol.BasicProtocolInterpreter;
 import com.wallet.blockchain_wallet.client.protocol.ProtocolInterpreter;
+import com.wallet.blockchain_wallet.client.utils.IpUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -80,6 +81,9 @@ public class WalletClient implements WalletService {
         }
     }
 
+    public void closeClient() {
+        client.close();
+    }
 
     private void registerCommunicationClass() {
         Kryo clientKryo = client.getKryo();
@@ -121,10 +125,6 @@ public class WalletClient implements WalletService {
         String text = object.getText();
         log.info("Interpreting: {} from {}:{}", text, hostAddress, port);
         interpreter.interpretMessage(text);
-    }
-
-    public void closeClient() {
-        client.close();
     }
 
     private int discoverPort() throws WalletException {

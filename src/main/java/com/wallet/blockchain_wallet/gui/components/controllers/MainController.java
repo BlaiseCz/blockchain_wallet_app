@@ -1,10 +1,10 @@
 package com.wallet.blockchain_wallet.gui.components.controllers;
 
-import com.wallet.blockchain_wallet.client.signature.SignatureUtils;
+import com.wallet.blockchain_wallet.client.signature.SignatureApplier;
+import com.wallet.blockchain_wallet.client.utils.GsonBuilders;
 import com.wallet.blockchain_wallet.client.wallet.HostInfo;
 import com.wallet.blockchain_wallet.client.wallet.WalletClient;
 import com.wallet.blockchain_wallet.client.wallet.WalletException;
-import com.wallet.blockchain_wallet.gui.components.WalletDataBuilder;
 import com.wallet.blockchain_wallet.gui.components.fields.NumberTextField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -30,19 +30,22 @@ public class MainController {
     private TextField hostTextField;
 
     @FXML
-    private Text ownedCoins;
+    private Text ownedCoinsText;
 
     @FXML
     private ListView<HostInfo> hostInfoListView;
 
     @FXML
-    private TextField coinsRecipient;
+    private ListView<String> walletsListView;
 
     @FXML
-    private TextField coinsToSend;
+    private TextField recipientWalletAddressTextField;
 
     @FXML
-    private TextField walletData;
+    private TextField coinsToSendTextField;
+
+    @FXML
+    private TextField walletDataTextField;
 
     @FXML
     private Button notifyWalletButton;
@@ -53,19 +56,22 @@ public class MainController {
     @FXML
     private Button sendCoinsButton;
 
+    @FXML
+    private Button requestWalletsButton;
+
     public static List<HostInfo> hostInfoHolder = new ArrayList<>();
     public static boolean isHostInfoUpdated = false;
 
-    public static int coinsBalance = 0;
+    public static double coinsBalance = 0.0;
     public static boolean isBalanceUpdated = false;
 
+    public static List<String> walletsList = new ArrayList<>();
+    public static boolean isWalletListUpdated = false;
 
-    @FXML
-    void closeApp() {
-        walletClient.closeClient();
-        System.exit(0);
-    }
 
+    /**
+     * REQUESTS BEGIN
+     */
     @FXML
     void nodesRequest() {
         initHostInfo();
@@ -87,10 +93,8 @@ public class MainController {
     @FXML
     void notifyWallet() {
         try {
-            String walletJsonData = walletData.getText();
-            log.info("WalletData in JSON format {}" , walletJsonData);
-            walletClient.setWalletData(WalletDataBuilder.jsonToWalletData(walletJsonData));
-//            String pk = SignatureUtils.getStringFromKey(walletClient.getWalletData().getPublicKey());
+            String walletJsonData = walletDataTextField.getText();
+            walletClient.setWalletData(GsonBuilders.jsonToWalletData(walletJsonData));
             String pk = walletClient.getWalletData().getPublicKey();
             String walletAddress = walletClient.getWalletData().getWalletAddress();
             walletClient.sendMessage("NW" + pk + "HASH:" + walletAddress);
@@ -100,47 +104,112 @@ public class MainController {
     }
 
     @FXML
-    public void viewHostInfoList(List<HostInfo> hostInfoList) {
-        log.info("updating HostInfoList {}", hostInfoList);
-        hostInfoListView.getItems().clear();
-        hostInfoListView.getItems().addAll(hostInfoList);
-        hostInfoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        switchIsHostInfoUpdated();
-    }
-
-
-    @FXML
-    public void getWalletBallance() {
-        log.info("get ballance");
-        ownedCoins.setText("124");
-    }
-
-    @FXML
-    public void performTransaction() {
-        log.info("perform transaction");
+    public void getWalletBalance() {
         try {
-            int userCoins = Integer.parseInt(ownedCoins.getText());
-            int transactionCoins = Integer.parseInt(coinsToSend.getText());
-            String recipientInfo = coinsRecipient.getText();
-            log.info("available coins:" + userCoins + " amount: " + transactionCoins);
-
-            if (userCoins > transactionCoins) {
-                    log.info(hostInfo.getAddress() + ":" + hostInfo.getPort() + recipientInfo + " amount: " + transactionCoins);
-                    walletClient.sendMessage("TSgjfd98g2h39ghn8e | fjh329f8h9e8yf290837fgyh |13.372137|128579683948| jfv78fdhv873b495bv7865987c632874");
-            } else {
-                ControllerAlert.showAlert(Alert.AlertType.WARNING, "WARNING", "not enough coins");
-            }
-        } catch (Exception | WalletException e) {
+            startOwnedCoinsUpdateThread();
+            walletClient.sendMessage("WD" + walletClient.getWalletData().getWalletAddress());
+        } catch (WalletException e) {
             ControllerAlert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
         }
     }
 
     @FXML
-    public void handleRecipientClick() {
-        HostInfo pickedValue = hostInfoListView.getSelectionModel().getSelectedItem();
-        log.info("clicked on " + pickedValue.getAddress() + ":" + pickedValue.getPort());
-        coinsRecipient.setText(pickedValue.getAddress() + ":" + pickedValue.getPort());
+    public void performTransaction() {
+        try {
+            double userCoins = Double.parseDouble(ownedCoinsText.getText());
+            double transactionCoins = Double.parseDouble(coinsToSendTextField.getText());
+
+            String recipientAddress = recipientWalletAddressTextField.getText();
+
+            if (walletClient.getWalletData().getWalletAddress().equals(recipientAddress)) {
+                ControllerAlert.showAlert(Alert.AlertType.WARNING,
+                        "WARNING",
+                        "YOU CAN NOT SEND ANY COINS TO YOURSELF MORON");
+            } else {
+                if (userCoins > transactionCoins) {
+                    String fullMsg = generateTransactionMessage(transactionCoins, recipientAddress);
+                    walletClient.sendMessage(fullMsg);
+                } else {
+                    ControllerAlert.showAlert(Alert.AlertType.WARNING, "WARNING", "not enough coins");
+                }
+            }
+        } catch (Exception | WalletException e) {
+            e.printStackTrace();
+            ControllerAlert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
+        }
     }
+
+    @FXML
+    public void walletsRequest() {
+        try {
+            startWalletsRequestThread();
+            walletClient.sendMessage("WS");
+        } catch (WalletException e) {
+            e.printStackTrace();
+            ControllerAlert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
+        }
+    }
+    /**
+     * REQUESTS END
+     */
+
+
+    /**
+     * VIEW HANDLERS BEGIN
+     */
+    @FXML
+    void closeApp() {
+        walletClient.closeClient();
+        System.exit(0);
+    }
+
+    @FXML
+    public void handleRecipientClick() {
+        String pickedAddress = walletsListView.getSelectionModel().getSelectedItem();
+        recipientWalletAddressTextField.setText(pickedAddress);
+    }
+
+    /**
+     * VIEW UPDATES BEGIN
+     */
+    private void updateHostInfoListView(List<HostInfo> hostInfoList) {
+        hostInfoListView.getItems().clear();
+        hostInfoListView.getItems().addAll(hostInfoList);
+        hostInfoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        switchIsHostInfoUpdated();
+    }
+    
+    private void updateWalletsListView(List<String> walletsList) {
+        walletsListView.getItems().clear();
+        walletsListView.getItems().addAll(walletsList);
+        walletsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        
+    }
+
+    private void updateOwnedCoins(double coins) {
+        ownedCoinsText.setText(String.valueOf(coins));
+        switchIsBalanceUpdated();
+    }
+    /**
+     * VIEW UPDATES END
+     */
+
+    /**
+     * VIEW HANDLERS END
+     */
+
+    private String generateTransactionMessage(double transactionCoins, String recipientAddress) {
+
+        String msg = "TS" + walletClient.getWalletData().getWalletAddress()
+                + "|" + recipientAddress
+                + "|" + transactionCoins
+                + "|" + System.currentTimeMillis()
+                + "|";
+
+        return msg + SignatureApplier
+                .applySignature(walletClient.getWalletData().getPrivateKey(), msg);
+    }
+
 
     private void setCoreParams() throws WalletException {
         if (walletClient == null) {
@@ -149,37 +218,6 @@ public class MainController {
             walletClient.setCoreConnectionParams(hostInfo);
         }
     }
-
-    /**
-     * THREADS STARTERS BEGIN
-     *
-     * Threads are used for asynchronous server responses and update view
-     */
-    private void startViewHostInfoListThread() {
-        new Thread(() -> {
-            while (true) {
-                if (isHostInfoUpdated) {
-                    Platform.runLater(() -> viewHostInfoList(hostInfoHolder));
-                    break;
-                }
-            }
-        }).start();
-    }
-
-    private void startOwnedCoinsUpdateThread() {
-        new Thread(() -> {
-            while (true) {
-                if (isBalanceUpdated) {
-                    Platform.runLater(() -> viewHostInfoList(hostInfoHolder));
-                    break;
-                }
-            }
-        }).start();
-    }
-
-    /**
-     * THREADS STARTERS END
-     */
 
     private void initHostInfo() {
         try {
@@ -191,10 +229,52 @@ public class MainController {
         }
     }
 
+
+    /**
+     * THREADS STARTERS BEGIN
+     * Threads are used for asynchronous server responses and update view
+     */
+    private void startViewHostInfoListThread() {
+        new Thread(() -> {
+            while (true) {
+                if (isHostInfoUpdated) {
+                    Platform.runLater(() -> updateHostInfoListView(hostInfoHolder));
+                    break;
+                }
+            }
+        }).start();
+    }
+
+    private void startOwnedCoinsUpdateThread() {
+        new Thread(() -> {
+            while (true) {
+                if (isBalanceUpdated) {
+                    Platform.runLater(() -> updateOwnedCoins(coinsBalance));
+                    break;
+                }
+            }
+        }).start();
+    }
+
+    private void startWalletsRequestThread() {
+        new Thread(() -> {
+            while (true) {
+                if (isWalletListUpdated) {
+                    Platform.runLater(() -> updateWalletsListView(walletsList));
+                    break;
+                }
+            }
+        }).start();
+    }
+    /**
+     * THREADS STARTERS END
+     */
+
     private void buttonAccess(boolean toggle) {
         notifyWalletButton.setDisable(!toggle);
         balanceButton.setDisable(!toggle);
         sendCoinsButton.setDisable(!toggle);
+        requestWalletsButton.setDisable(!toggle);
     }
 
     private void switchIsHostInfoUpdated() {
@@ -203,5 +283,9 @@ public class MainController {
 
     private void switchIsBalanceUpdated() {
         isBalanceUpdated = !isBalanceUpdated;
+    }
+
+    private void switchIsWalletListUpdated() {
+        isWalletListUpdated = !isWalletListUpdated;
     }
 }
