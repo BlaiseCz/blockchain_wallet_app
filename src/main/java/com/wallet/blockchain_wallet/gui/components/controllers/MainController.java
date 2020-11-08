@@ -91,7 +91,7 @@ public class MainController {
             log.info("WalletData in JSON format {}" , walletJsonData);
             walletClient.setWalletData(WalletDataBuilder.jsonToWalletData(walletJsonData));
             String pk = SignatureUtils.getStringFromKey(walletClient.getWalletData().getPublicKey());
-            String walletAddress = walletClient.getWalletData().getWalletAddress();
+            String walletAddress = walletClient.getWalletData().getHash();
             walletClient.sendMessage("NW" + pk + "HASH:" + walletAddress);
         } catch (WalletException e) {
             ControllerAlert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
