@@ -53,7 +53,7 @@ public class BlockchainWalletApplication extends Application {
         component = loader.getController();
 
         primaryStage.setTitle("Blockchain Wallet");
-        primaryStage.setScene(new Scene(root, 1000, 400));
+        primaryStage.setScene(new Scene(root, 1000, 350));
         primaryStage.show();
     }
 }

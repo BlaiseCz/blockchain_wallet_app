@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
@@ -178,12 +179,12 @@ public class MainController {
         hostInfoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         switchIsHostInfoUpdated();
     }
-    
+
     private void updateWalletsListView(List<String> walletsList) {
         walletsListView.getItems().clear();
         walletsListView.getItems().addAll(walletsList);
         walletsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        
+
     }
 
     private void updateOwnedCoins(double coins) {
@@ -234,6 +235,7 @@ public class MainController {
      * THREADS STARTERS BEGIN
      * Threads are used for asynchronous server responses and update view
      */
+    @SneakyThrows
     private void startViewHostInfoListThread() {
         new Thread(() -> {
             while (true) {
@@ -241,10 +243,12 @@ public class MainController {
                     Platform.runLater(() -> updateHostInfoListView(hostInfoHolder));
                     break;
                 }
+                Thread.sleep(100);
             }
         }).start();
     }
 
+    @SneakyThrows
     private void startOwnedCoinsUpdateThread() {
         new Thread(() -> {
             while (true) {
@@ -252,10 +256,12 @@ public class MainController {
                     Platform.runLater(() -> updateOwnedCoins(coinsBalance));
                     break;
                 }
+                Thread.sleep(100);
             }
         }).start();
     }
 
+    @SneakyThrows
     private void startWalletsRequestThread() {
         new Thread(() -> {
             while (true) {
@@ -263,9 +269,11 @@ public class MainController {
                     Platform.runLater(() -> updateWalletsListView(walletsList));
                     break;
                 }
+                Thread.sleep(100);
             }
         }).start();
     }
+
     /**
      * THREADS STARTERS END
      */

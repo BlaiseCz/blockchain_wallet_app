@@ -3,20 +3,21 @@ package com.wallet.blockchain_wallet.client.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.Enumeration;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
 
 /**
  * Ukradzonie ze stacka, ale zdaje się działać bezbłędnie
  * https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
- * .*/
+ * .
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IpUtils {
 
-    /**.
+    /**
+     * .
      * Też ze stacka:
      * https://stackoverflow.com/questions/434718/sockets-discover-port-availability-using-java
      */

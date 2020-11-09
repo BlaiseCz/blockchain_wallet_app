@@ -1,7 +1,7 @@
 package com.wallet.blockchain_wallet.client.protocol;
 
-import com.wallet.blockchain_wallet.client.protocol.header.response.NodesResponseProcessor;
 import com.wallet.blockchain_wallet.client.protocol.header.ProtocolHeader;
+import com.wallet.blockchain_wallet.client.protocol.header.response.NodesResponseProcessor;
 import com.wallet.blockchain_wallet.client.protocol.header.response.WalletDataResponseProcessor;
 import com.wallet.blockchain_wallet.client.protocol.header.response.WalletsResponseProcessor;
 import com.wallet.blockchain_wallet.gui.components.controllers.MainController;
