@@ -5,14 +5,23 @@ import com.wallet.blockchain_wallet.client.protocol.header.response.NodesRespons
 import com.wallet.blockchain_wallet.client.protocol.header.response.WalletDataResponseProcessor;
 import com.wallet.blockchain_wallet.client.protocol.header.response.WalletsResponseProcessor;
 import com.wallet.blockchain_wallet.gui.components.controllers.MainController;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import sun.applet.Main;
 
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class BasicProtocolInterpreter implements ProtocolInterpreter {
+
+    private final MainController mainController;
+
+    public BasicProtocolInterpreter(@Lazy MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @Override
     public void interpretMessage(String message) {
@@ -44,19 +53,16 @@ public class BasicProtocolInterpreter implements ProtocolInterpreter {
 
     private void nodesResponse(String value) {
         NodesResponseProcessor nodesResponseProcessor = new NodesResponseProcessor();
-        MainController.hostInfoHolder = nodesResponseProcessor.hostInfoListFromData(value);
-        MainController.isHostInfoUpdated = true;
+        mainController.updateHostInfo(nodesResponseProcessor.hostInfoListFromData(value));
     }
 
     private void walletDateResponse(String value) {
         WalletDataResponseProcessor walletDataResponseProcessor = new WalletDataResponseProcessor();
-        MainController.coinsBalance = walletDataResponseProcessor.receiveOwnedCoins(value);
-        MainController.isBalanceUpdated = true;
+        mainController.updateCoins(walletDataResponseProcessor.receiveOwnedCoins(value));
     }
 
     private void walletsResponse(String value) {
         WalletsResponseProcessor walletsResponseProcessor = new WalletsResponseProcessor();
-        MainController.walletsList = walletsResponseProcessor.walletsResponseList(value);
-        MainController.isWalletListUpdated = true;
+        mainController.updateWallets(walletsResponseProcessor.walletsResponseList(value));
     }
 }
