@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -47,21 +48,8 @@ public class WalletClient implements WalletService {
     /**
      * RESPONSES INTERPRETER
      */
-    private ProtocolInterpreter interpreter;
+    private final ProtocolInterpreter interpreter;
 
-
-    public WalletClient(HostInfo hostInfo) throws WalletException {
-        try {
-            this.coreConnectionParams = hostInfo;
-            this.client = new Client();
-            this.server = new Server();
-            registerCommunicationClass();
-            startServer();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new WalletException("Something wrong with WalletClient constructor...");
-        }
-    }
 
     @Override
     public void sendMessage(String msg) throws WalletException {
@@ -85,6 +73,16 @@ public class WalletClient implements WalletService {
         client.close();
     }
 
+    public void joinToWeb(HostInfo hostInfo) throws
+                                             IOException,
+                                             WalletException {
+        this.coreConnectionParams = hostInfo;
+        this.client = new Client();
+        this.server = new Server();
+        registerCommunicationClass();
+        startServer();
+    }
+
     private void registerCommunicationClass() {
         Kryo clientKryo = client.getKryo();
         clientKryo.register(CommunicationObject.class);
@@ -95,8 +93,6 @@ public class WalletClient implements WalletService {
 
 
     private void initializeInterpreter() {
-        interpreter = new BasicProtocolInterpreter();
-
         server.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
