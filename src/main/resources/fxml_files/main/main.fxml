@@ -53,7 +53,7 @@
         </Text>
         <TextField fx:id="walletDataTextField" layoutX="550.0" layoutY="56.0"/>
         <Button fx:id="notifyWalletButton" disable="true" layoutX="750.0" layoutY="56.0" mnemonicParsing="false"
-                onAction="#notifyWallet" text="NOTIFY WALLET"/>
+                onAction="#initWallet" text="ADD WALLET JSON"/>
         <Button fx:id="balanceButton" disable="true" onAction="#getWalletBalance" layoutX="540.0" layoutY="125.0"
                 mnemonicParsing="false" text="BALANCE"/>
         <Text fx:id="ownedCoinsText" layoutX="620.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0.0">

@@ -92,16 +92,9 @@ public class MainController {
     }
 
     @FXML
-    void notifyWallet() {
-        try {
-            String walletJsonData = walletDataTextField.getText();
-            walletClient.setWalletData(GsonBuilders.jsonToWalletData(walletJsonData));
-            String pk = walletClient.getWalletData().getPublicKey();
-            String walletAddress = walletClient.getWalletData().getWalletAddress();
-            walletClient.sendMessage("NW" + pk + "HASH:" + walletAddress);
-        } catch (WalletException e) {
-            ControllerAlert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
-        }
+    void initWallet() {
+        String walletJsonData = walletDataTextField.getText();
+        walletClient.setWalletData(GsonBuilders.jsonToWalletData(walletJsonData));
     }
 
     @FXML
@@ -235,7 +228,6 @@ public class MainController {
      * THREADS STARTERS BEGIN
      * Threads are used for asynchronous server responses and update view
      */
-    @SneakyThrows
     private void startViewHostInfoListThread() {
         new Thread(() -> {
             while (true) {
@@ -243,12 +235,10 @@ public class MainController {
                     Platform.runLater(() -> updateHostInfoListView(hostInfoHolder));
                     break;
                 }
-                Thread.sleep(100);
             }
         }).start();
     }
 
-    @SneakyThrows
     private void startOwnedCoinsUpdateThread() {
         new Thread(() -> {
             while (true) {
@@ -256,12 +246,10 @@ public class MainController {
                     Platform.runLater(() -> updateOwnedCoins(coinsBalance));
                     break;
                 }
-                Thread.sleep(100);
             }
         }).start();
     }
 
-    @SneakyThrows
     private void startWalletsRequestThread() {
         new Thread(() -> {
             while (true) {
@@ -269,7 +257,6 @@ public class MainController {
                     Platform.runLater(() -> updateWalletsListView(walletsList));
                     break;
                 }
-                Thread.sleep(100);
             }
         }).start();
     }
