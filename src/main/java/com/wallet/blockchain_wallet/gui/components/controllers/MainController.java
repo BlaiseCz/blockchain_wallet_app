@@ -143,6 +143,12 @@ public class MainController {
             ControllerAlert.showAlert(Alert.AlertType.ERROR, "ERROR", e.getMessage());
         }
     }
+
+    @FXML
+    void initWallet() {
+        String walletJsonData = walletDataTextField.getText();
+        walletClient.setWalletData(GsonBuilders.jsonToWalletData(walletJsonData));
+    }
     /**
      * REQUESTS END
      */
